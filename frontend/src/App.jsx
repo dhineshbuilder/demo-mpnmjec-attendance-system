@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'r
 import { authApi } from './api';
 import { AppShell } from './components/AppShell';
 import { LoadingState, ToastStack } from './components/Ui';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { AttendancePage, MyAttendancePage } from './pages/AttendancePage';
 import { ChangePasswordPage } from './pages/ChangePasswordPage';
 import { ClassAdvisorStudentExportPage } from './pages/ClassAdvisorStudentExportPage';
 import { DataExportsPage } from './pages/DataExportsPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { EditRecordsPage } from './pages/EditRecordsPage';
-import { KioskPage } from './pages/KioskPage';
 import { LoginPage } from './pages/LoginPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -37,45 +37,14 @@ function ProtectedPage({ allowedRoles, session, children }) {
   return children;
 }
 
-function KioskRoute({ session, kioskSession, onLogin, onMainLogout, onKioskLogout }) {
-  const activeSession = canAccessKioskSession(kioskSession)
-    ? kioskSession
-    : canAccessKioskSession(session)
-      ? session
-      : null;
-
-  if (!activeSession?.token) {
-    return (
-      <LoginPage
-        onLogin={onLogin}
-        initialTab="staff"
-        allowedTabs={['staff']}
-        title="Kiosk Access"
-        subtitle="Sign in with an authorized staff account to launch biometric kiosk mode."
-      />
-    );
-  }
-
-  return (
-    <KioskPage
-      token={activeSession.token}
-      onUnauthorized={activeSession === kioskSession ? onKioskLogout : onMainLogout}
-    />
-  );
-}
-
 function AppRoutes({
   session,
-  kioskSession,
   toasts,
   notify,
   handleLogin,
   handleLogout,
-  handleKioskLogin,
-  handleKioskLogout,
 }) {
-  const location = useLocation();
-  const hideToasts = location.pathname.startsWith('/kiosk');
+  const hideToasts = false;
   const currentRole = normalizeRole(session?.user?.role);
 
   return (
@@ -86,12 +55,9 @@ function AppRoutes({
         <Route
           path="/kiosk"
           element={(
-            <KioskRoute
-              session={session}
-              kioskSession={kioskSession}
-              onLogin={handleKioskLogin}
-              onMainLogout={handleLogout}
-              onKioskLogout={handleKioskLogout}
+            <NotFoundPage
+              title="403 - Kiosk Mode Restricted"
+              message="Biometric Kiosk mode is restricted to dedicated kiosk hardware terminals or standalone kiosk deployments. Please access the portal using standard credentials."
             />
           )}
         />
@@ -322,7 +288,7 @@ export default function App() {
     setKioskSession(null);
   }
 
-  if (checkingMainSession || checkingKioskSession) {
+  if (checkingMainSession) {
     return (
       <div className="session-loader">
         <LoadingState label="Validating your session..." />
@@ -334,14 +300,12 @@ export default function App() {
     <Router>
       <AppRoutes
         session={session}
-        kioskSession={kioskSession}
         toasts={toasts}
         notify={notify}
         handleLogin={handleLogin}
         handleLogout={handleLogout}
-        handleKioskLogin={handleKioskLogin}
-        handleKioskLogout={handleKioskLogout}
       />
     </Router>
   );
 }
+
