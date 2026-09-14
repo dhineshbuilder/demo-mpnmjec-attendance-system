@@ -20,7 +20,9 @@ COPY requirements.txt /app/requirements.txt
 COPY backend/requirements-core.txt /app/backend/requirements-core.txt
 
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /app/requirements.txt
+    pip install --no-cache-dir -r /app/requirements.txt && \
+    python -c "from insightface.app import FaceAnalysis; app = FaceAnalysis(name='buffalo_s', allowed_modules=['detection', 'recognition']); app.prepare(ctx_id=-1, det_size=(320, 320))" && \
+    rm -f /root/.insightface/models/*.zip
 
 COPY . /app
 

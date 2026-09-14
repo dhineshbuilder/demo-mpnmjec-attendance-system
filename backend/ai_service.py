@@ -60,9 +60,11 @@ def init_face_analyzer():
         name=INSIGHTFACE_MODEL_NAME,
         root=INSIGHTFACE_MODEL_ROOT,
         providers=['CPUExecutionProvider'],
+        allowed_modules=['detection', 'recognition'],
     )
     app.prepare(ctx_id=-1, det_size=(INSIGHTFACE_DET_SIZE, INSIGHTFACE_DET_SIZE))
     return app
+
 
 
 def warmup_face_analyzer(app):
