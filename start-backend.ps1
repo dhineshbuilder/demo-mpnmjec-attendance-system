@@ -1,17 +1,9 @@
 param(
-    # Vision is required for enrollment and kiosk recognition.  Keep
-    # -WithVision as a supported no-op for existing shortcuts; -CoreOnly is
-    # intended only for API-only development.
     [switch]$WithVision,
     [switch]$CoreOnly
 )
 
-if ($WithVision -and $CoreOnly) {
-    Write-Error "Use either -WithVision or -CoreOnly, not both."
-    exit 1
-}
-
-$useVision = -not $CoreOnly
+$useVision = $WithVision -and (-not $CoreOnly)
 
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $backendDir = Join-Path $repoRoot "backend"
