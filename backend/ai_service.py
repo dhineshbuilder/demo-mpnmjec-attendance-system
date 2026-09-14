@@ -1,6 +1,11 @@
-from __future__ import annotations
-
 import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["ORT_NUM_THREADS"] = "1"
+
 import base64
 import binascii
 import threading
@@ -17,6 +22,7 @@ except ImportError as exc:
     np = None
     FaceAnalysis = None
     FACE_RECOGNITION_IMPORT_ERROR = exc
+
 else:
     FACE_RECOGNITION_IMPORT_ERROR = None
 

@@ -130,8 +130,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 def preload_face_recognition() -> None:
-    if os.getenv("PRELOAD_FACE_RECOGNITION", "true").strip().lower() not in {"1", "true", "yes", "on"}:
+    if os.getenv("PRELOAD_FACE_RECOGNITION", "false").strip().lower() not in {"1", "true", "yes", "on"}:
         return
+
 
     try:
         from . import ai_service
