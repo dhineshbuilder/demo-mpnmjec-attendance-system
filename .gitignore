@@ -4,9 +4,6 @@
 *.env
 *.env.*
 *.local
-cloudflared.exe
-*.exe
-
 **/.env
 **/.env.*
 **/*.env
@@ -88,6 +85,8 @@ tools/nssm.exe
 tools/caddy.exe
 ngrok.exe
 ngrok.yml
+cloudflared.exe
+*.exe
 
 # Editor and OS files
 .vscode/*

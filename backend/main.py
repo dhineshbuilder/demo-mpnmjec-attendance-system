@@ -121,18 +121,19 @@ allowed_origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=allowed_origins if "*" not in allowed_origins else [],
+    allow_origin_regex=r"https?://.*" if ("*" in allowed_origins or not allowed_origins) else None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_private_network=True,
 )
 
 
 @app.on_event("startup")
 def preload_face_recognition() -> None:
-    if os.getenv("PRELOAD_FACE_RECOGNITION", "false").strip().lower() not in {"1", "true", "yes", "on"}:
+    if os.getenv("PRELOAD_FACE_RECOGNITION", "true").strip().lower() not in {"1", "true", "yes", "on"}:
         return
-
 
     try:
         from . import ai_service

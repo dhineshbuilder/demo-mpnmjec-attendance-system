@@ -3,14 +3,7 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PORT=7860 \
-    APP_TIMEZONE=Asia/Kolkata \
-    OMP_NUM_THREADS=1 \
-    OPENBLAS_NUM_THREADS=1 \
-    MKL_NUM_THREADS=1 \
-    ORT_NUM_THREADS=1 \
-    NUMEXPR_NUM_THREADS=1 \
-    VECLIB_MAXIMUM_THREADS=1 \
-    PRELOAD_FACE_RECOGNITION=0
+    APP_TIMEZONE=Asia/Kolkata
 
 WORKDIR /app
 
@@ -23,13 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/requirements.txt
 COPY backend/requirements-core.txt /app/backend/requirements-core.txt
+COPY requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /app/requirements.txt && \
-    python -c "from insightface.app import FaceAnalysis; app = FaceAnalysis(name='buffalo_s', allowed_modules=['detection', 'recognition']); app.prepare(ctx_id=-1, det_size=(320, 320))" && \
-    rm -f /root/.insightface/models/*.zip
+    pip install --no-cache-dir -r /app/backend/requirements-core.txt
 
 COPY . /app
 

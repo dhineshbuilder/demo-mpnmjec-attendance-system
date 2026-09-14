@@ -57,10 +57,7 @@ npm run dev
    ADMIN_PASSWORD=YourPasswordHere
    ```
 
-2. Sync the new credentials from `backend/.env` to the SQLite database:
+2. Sync the new credentials from `backend/.env` to the database:
    ```powershell
    .\backend\.venv\Scripts\python.exe -m backend.seed_admin
-   ```
-
-
-.\run-live.ps1
+   ```

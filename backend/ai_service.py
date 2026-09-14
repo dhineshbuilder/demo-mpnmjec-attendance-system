@@ -1,11 +1,6 @@
-import os
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
-os.environ["ORT_NUM_THREADS"] = "1"
+from __future__ import annotations
 
+import os
 import base64
 import binascii
 import threading
@@ -22,7 +17,6 @@ except ImportError as exc:
     np = None
     FaceAnalysis = None
     FACE_RECOGNITION_IMPORT_ERROR = exc
-
 else:
     FACE_RECOGNITION_IMPORT_ERROR = None
 
@@ -66,11 +60,9 @@ def init_face_analyzer():
         name=INSIGHTFACE_MODEL_NAME,
         root=INSIGHTFACE_MODEL_ROOT,
         providers=['CPUExecutionProvider'],
-        allowed_modules=['detection', 'recognition'],
     )
     app.prepare(ctx_id=-1, det_size=(INSIGHTFACE_DET_SIZE, INSIGHTFACE_DET_SIZE))
     return app
-
 
 
 def warmup_face_analyzer(app):
